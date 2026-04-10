@@ -176,8 +176,7 @@ API key is a secret token used for authentication.
 Identifies your account
 Tracks usage
 
-⚠️ Never share it publicly
-
+Make sure not to share it anywhere, just as I am not sharing my env file here :)
 💰 Billing Setup
 Added ~$5 credit
 Required to use API
@@ -185,7 +184,7 @@ Without credits → error (429)
 ⚙️ Project Setup
 📁 Folder Structure
 hello_world/
-│── 01.py
+│── File name in my Vs code it is 01.py here i am using API setup and integration.py
 │── .env
 🔧 Virtual Environment
 Create
