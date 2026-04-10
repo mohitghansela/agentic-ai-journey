@@ -159,3 +159,106 @@ Text → Tokenization → Embeddings → Positional Encoding → Transformer (Mu
 * Positional encoding helps maintain word order
 
 ---
+🚀 API Setup & Integration (OpenAI)
+🧠 What is OpenAI API?
+
+OpenAI API allows your code to interact with AI models like GPT.
+
+👉 You can:
+
+Generate text
+Build chatbots
+Create AI apps
+🔑 API Key
+
+API key is a secret token used for authentication.
+
+Identifies your account
+Tracks usage
+
+⚠️ Never share it publicly
+
+💰 Billing Setup
+Added ~$5 credit
+Required to use API
+Without credits → error (429)
+⚙️ Project Setup
+📁 Folder Structure
+hello_world/
+│── 01.py
+│── .env
+🔧 Virtual Environment
+Create
+python -m venv venv
+Activate (PowerShell)
+.\venv\Scripts\Activate
+📦 Install Dependencies
+pip install openai python-dotenv
+📁 .env File
+OPENAI_API_KEY=your_api_key_here
+
+💡 Keeps API key secure
+
+🤖 First OpenAI Program
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# Load environment variables
+load_dotenv()
+
+# Create client
+client = OpenAI()
+
+# Send request
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": "Hey There I am Mohit Ghansela"}
+    ]
+)
+
+# Print response
+print(response.choices[0].message.content)
+⚙️ Code Explanation
+load_dotenv()
+
+Loads API key from .env
+
+OpenAI()
+
+Creates client to connect with OpenAI
+
+chat.completions.create()
+
+Sends request to model
+
+model="gpt-4o-mini"
+Fast
+Low cost
+Beginner friendly
+messages
+{"role": "user", "content": "Hello"}
+response.choices[0].message.content
+
+Extracts model output
+
+❌ Errors Faced & Fixes
+🔴 Module Not Found
+pip install openai python-dotenv
+🔴 401 Authentication Error
+Cause: wrong/restricted key
+Fix: generate new key
+🔴 429 Quota Error
+Cause: no credits
+Fix: add billing
+🔴 Env Not Loading
+Fix:
+from dotenv import load_dotenv
+load_dotenv()
+💡 Best Practices
+Use .env for API key ✅
+Use virtual environment ✅
+Don’t hardcode secrets ❌
+Add .env to .gitignore ✅
+🔄 Integration Flow
+User Input → Python Code → OpenAI API → Model → Response → Output
