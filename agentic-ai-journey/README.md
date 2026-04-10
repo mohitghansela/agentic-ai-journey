@@ -1,6 +1,6 @@
 # 🚀 Agentic AI Learning Journey
 
-This repository documents my daily journey of learning **Generative AI and Agentic AI** from the ground up.
+This repository documents my daily journey of learning **Agentic AI** from the ground up.
 
 The goal of this journey is not just to understand concepts, but to **build, experiment, and apply** them in real-world scenarios.
 
