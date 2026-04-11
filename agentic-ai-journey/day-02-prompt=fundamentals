@@ -1,248 +1,630 @@
-Today we learned a very important idea:
+> Today we learned one of the most important ideas in working with AI:
+> **How to control AI using prompts.**
+> 👉 In simple words: **The way you ask = the way AI answers.**
+> If you write better prompts → you get better output.
 
-👉 How to control AI using prompts
+---
 
-In simple words:
-The way you ask = the way AI answers
+## Table of Contents
 
-If you write better prompts → you get better output.
-🔹 1. System Prompt (Foundation of Control)
-🧠 Concept
+1. [System Prompts](#1-system-prompts)
+2. [Zero-Shot Prompting](#2-zero-shot-prompting)
+3. [Few-Shot Prompting](#3-few-shot-prompting)
+4. [Chain-of-Thought Prompting](#4-chain-of-thought-prompting)
+5. [Automated Reasoning Prompting](#5-automated-reasoning-prompting)
+6. [Persona-Based Prompting](#6-persona-based-prompting)
+7. [Prompting Styles](#7-prompting-styles)
+8. [Full Working Program](#8-full-working-program)
+9. [Final Thought](#9-final-thought)
 
-A System Prompt tells the AI:
+---
 
-Who you are (role)
-How to behave
-What rules to follow
+## 1. System Prompts
 
-👉 It is like setting the personality + brain of AI
+### 🧠 What We Learned
+
+Today we learned that a **System Prompt** is the very first instruction we give to AI — before the conversation even starts.
+
+It tells the AI:
+- **Who it is** (its role)
+- **How to behave**
+- **What rules to follow**
+
+👉 Think of it like setting the personality and brain of AI before you start talking to it.
+
+### 💻 Example We Studied
+
+```python
 SYSTEM_PROMPT = """
-You are a coding assistant.
+You are a data analysis assistant specialized in Python and SQL.
 
 Rules:
-- Only answer coding-related questions
-- If the question is not coding-related, reply:
-"Sorry, I can only help with coding questions."
+- Only answer questions related to data analysis, pandas, SQL, or data visualization.
+- If the user asks something unrelated, reply:
+  "I'm a data analysis assistant. I can only help with data-related questions."
+- Always suggest the most efficient approach.
+- If you use code, add a brief comment explaining what each block does.
 """
-🧾 Easy Understanding
+```
 
-Without system prompt:
-👉 AI gives general/random answers
+### 🧾 Easy Understanding
 
-With system prompt:
-👉 AI becomes focused and controlled
+| Without System Prompt | With System Prompt |
+|---|---|
+| AI gives random, general answers | AI stays focused on data analysis only |
+| No fixed personality | Has a defined role and rules |
 
-⚠️ Important Note
-It is a guideline, not a strict rule
-Sometimes AI may ignore it
-➡️ So you must write it clearly and strongly
+### ⚠️ Important Note We Should Remember
 
-Zero-Shot Prompting
-🧠 Concept
+- A system prompt is a **guideline, not a strict lock** — AI can sometimes drift from it.
+- So we must write rules **clearly and specifically** to reduce that chance.
+- The more concrete your rules → the more predictable the output.
 
-👉 Giving direct instruction without any example
+---
+
+## 2. Zero-Shot Prompting
+
+### 🧠 What We Learned
+
+Today we learned about **Zero-Shot Prompting** — which simply means giving a direct instruction to AI **with no examples at all**.
+
+👉 We just tell it what we want, and AI answers using its existing knowledge.
+
+### 💻 Example We Studied
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+
 response = client.chat.completions.create(
     model="gpt-4o-mini",
     messages=[
-        {"role": "user", "content": "Explain Python loops"}
+        {
+            "role": "user",
+            "content": "Write a Python function that checks if a number is prime."
+        }
     ]
 )
-🧾 Easy Understanding
-You just say what you want
-AI answers based on its knowledge
-✔️ When to use?
-Simple questions
-Quick answers
-🔹 Few-Shot Prompting
-🧠 Concept
 
-👉 Giving examples first, then asking the question
+print(response.choices[0].message.content)
+```
 
-💻 Example
+**What AI returned:**
+```python
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+```
+
+### 🧾 Easy Understanding
+
+- We just say what we want
+- AI answers based on its training knowledge
+- No examples needed from our side
+
+### ✅ When to Use
+
+- Simple, well-defined tasks
+- Quick questions where we just need a fast answer
+
+---
+
+## 3. Few-Shot Prompting
+
+### 🧠 What We Learned
+
+Today we learned about **Few-Shot Prompting** — where we give AI **2 to 5 examples first**, and then ask our actual question.
+
+👉 AI looks at our examples, understands the pattern, and follows the same pattern for our question.
+
+### 💻 Example We Studied
+
+```python
 messages = [
     {
         "role": "user",
         "content": """
+You will classify the sentiment of customer reviews.
+
 Example 1:
-Input: 2 + 3
-Output: 5
+Review: "The product broke after one use. Very disappointed."
+Sentiment: Negative
 
 Example 2:
-Input: 4 + 6
-Output: 10
+Review: "Absolutely love it! Arrived early and works perfectly."
+Sentiment: Positive
 
-Now solve:
-Input: 5 + 7
+Example 3:
+Review: "It's okay, nothing special but gets the job done."
+Sentiment: Neutral
+
+Now classify this:
+Review: "Worst purchase I have ever made. Complete waste of money."
 """
     }
 ]
-🧾 Easy Understanding
 
-AI:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages
+)
 
-Looks at examples
-Understands pattern
-Follows same pattern
-✔️ When to use?
-When format matters
-When you want accurate output
-🔹 Chain-of-Thought Prompting (Step-by-Step Thinking)
-🧠 Concept
+print(response.choices[0].message.content)
+# Output → Sentiment: Negative
+```
 
-👉 Ask AI to think step-by-step
+### 🧾 Easy Understanding
 
-💻 Example
+When AI sees our examples, it:
+1. Reads all the examples we gave
+2. Identifies the **input → output pattern**
+3. Applies that same pattern to our new input
+
+### ✅ When to Use
+
+- When we need a **specific output format**
+- For classification tasks like spam detection, sentiment analysis, category labeling
+- When zero-shot gives inconsistent or messy results
+
+---
+
+## 4. Chain-of-Thought Prompting
+
+### 🧠 What We Learned
+
+Today we learned **Chain-of-Thought (CoT) Prompting** — where we tell AI to **think step-by-step** and show its reasoning before giving the final answer.
+
+👉 This dramatically improves accuracy on complex or multi-step problems.
+
+### 💻 Example We Studied
+
+```python
 SYSTEM_PROMPT = """
-Solve problems step-by-step.
-Explain reasoning clearly before final answer.
+You are a logical reasoning assistant.
+
+When solving any problem:
+1. First, restate what is being asked.
+2. Break it into smaller sub-problems.
+3. Solve each sub-problem step by step.
+4. Give the final answer only after showing all your reasoning.
 """
-🧾 Easy Understanding
 
-AI will:
-
-Break problem into steps
-Solve each step
-Then give final answer
-✔️ When to use?
-Maths problems
-Logical questions
-Complex tasks
-🔹Automated Reasoning Prompting
-🧠 Concept
-
-👉 AI thinks internally but shows only final answer
-SYSTEM_PROMPT = """
-Understand the problem deeply.
-Break it into steps internally.
-Do NOT show steps.
-Give only the final answer.
+question = """
+A store sells apples at $1.20 each and oranges at $0.80 each.
+Sarah buys 5 apples and some oranges. She pays a total of $10.00.
+How many oranges did she buy?
 """
-🧾 Easy Understanding
 
-AI:
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": question}
+    ]
+)
 
-Thinks step-by-step internally
-But does NOT show steps
+print(response.choices[0].message.content)
+```
 
-👉 Clean and fast output
+**What AI returned:**
+```
+Step 1 – What is asked: Find the number of oranges Sarah bought.
 
-✔️ When to use?
-Production systems
-Clean responses needed
-🔹 Persona-Based Prompting
-🧠 Concept
+Step 2 – Calculate apple cost:
+5 apples × $1.20 = $6.00
 
-👉 Giving AI a role or personality
+Step 3 – Remaining amount for oranges:
+$10.00 - $6.00 = $4.00
+
+Step 4 – Number of oranges:
+$4.00 ÷ $0.80 = 5 oranges
+
+Final Answer: Sarah bought 5 oranges.
+```
+
+### 🧾 Easy Understanding
+
+- AI breaks the problem into steps
+- Solves each step one by one
+- Then gives the final answer
+
+### ✅ When to Use
+
+- Math word problems
+- Logical and reasoning questions
+- Code debugging with explanation
+- Any task where **accuracy matters more than speed**
+
+---
+
+## 5. Automated Reasoning Prompting
+
+### 🧠 What We Learned
+
+Today we also learned about **Automated Reasoning Prompting** — which is the opposite of Chain-of-Thought.
+
+👉 Here we ask AI to think internally but **only show us the final answer** — no visible steps. This gives clean, fast, professional output.
+
+### 💻 Example We Studied
+
+```python
 SYSTEM_PROMPT = """
-You are a friendly Python teacher.
+You are a code review assistant.
 
-- Explain in simple language
-- Use examples
-- Be friendly and encouraging
+Instructions:
+- Internally analyze the code for bugs, inefficiencies, and bad practices.
+- Do NOT show your analysis steps or reasoning.
+- Return only a corrected version of the code with a one-line summary of what you fixed.
 """
-🧾 Easy Understanding
 
-Same AI → different behavior:
+user_code = """
+def get_average(numbers):
+    total = 0
+    for n in numbers:
+        total = total + n
+    avg = total / len(numbers)
+    return avg
+"""
 
-Teacher → simple explanation
-Developer → technical answer
-Interviewer → asks questions
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"Review this code:\n{user_code}"}
+    ]
+)
+
+print(response.choices[0].message.content)
+```
+
+**What AI returned:**
+```
+Fixed: Added a zero-division guard for empty input lists.
+
+def get_average(numbers):
+    if not numbers:
+        return 0
+    return sum(numbers) / len(numbers)
+```
+
+### 🧾 Easy Understanding
+
+- AI thinks step-by-step **internally**
+- But shows us **only the final clean result**
+- Output is neat and ready to use directly
+
+### ✅ When to Use
+
+- Production systems and customer-facing chatbots
+- Automated pipelines where only the result matters
+- Anywhere we want fast, clean, professional output
+
+---
+
+## 6. Persona-Based Prompting
+
+### 🧠 What We Learned
+
+Today we learned about **Persona-Based Prompting** — where we give AI a specific role, personality, or character.
+
+👉 The same AI behaves very differently depending on what persona we assign to it.
+
+### 💻 Example We Studied
+
+```python
+question = "What is recursion in programming?"
+
+personas = {
+    "Teacher": """
+        You are a friendly computer science teacher for beginners.
+        - Use simple language and relatable analogies.
+        - Avoid technical jargon.
+        - Give one short real-world example.
+    """,
+
+    "Senior Developer": """
+        You are a senior software engineer in a code review meeting.
+        - Be technical and precise.
+        - Mention stack frames, base cases, and performance considerations.
+        - Keep it under 5 sentences.
+    """,
+
+    "Tech Interviewer": """
+        You are a FAANG technical interviewer.
+        - Do NOT explain the concept directly.
+        - Ask the candidate 2 follow-up questions to test deep understanding.
+    """
+}
+
+for role, system_prompt in personas.items():
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question}
+        ]
+    )
+    print(f"\n--- {role} ---")
+    print(response.choices[0].message.content)
+```
+
+**What AI returned for each persona:**
+
+```
+--- Teacher ---
+Great question! Imagine you're standing between two mirrors facing each other —
+you see a reflection of a reflection, going on and on. Recursion is similar:
+a function that calls itself to solve a smaller version of the same problem.
+Example: counting down from 5 to 1.
+
+--- Senior Developer ---
+Recursion is a technique where a function calls itself with a reduced input
+until a base case is reached. Each call pushes a new frame onto the call stack.
+Without a base case, you get a stack overflow. Prefer iteration when memory
+efficiency matters.
+
+--- Tech Interviewer ---
+Interesting. Before you explain, answer these:
+1. Can every recursive solution be rewritten iteratively? Why or why not?
+2. What happens at the memory level when a recursive function runs without a base case?
+```
+
+### 🧾 Easy Understanding
+
+Same AI → completely different behavior based on the persona we set:
+
+| Persona | Behavior |
+|---|---|
+| Teacher | Simple, friendly, uses analogies |
+| Senior Developer | Technical, direct, precise |
+| Tech Interviewer | Asks questions instead of answering |
+
+### ⚠️ Important Note We Learned
+
+Examples in the prompt are **suggestions**, not guaranteed rules.  
+If we need strict behavior, we must write an **explicit rule**.
+
+```python
 SYSTEM_PROMPT = """
-
-
-You are a Python teacher.
+You are a customer support bot for TechStore.
 
 STRICT RULE:
-If user asks "who are you", reply exactly:
-"Your mom"
+If the user asks about a refund, always reply exactly:
+"Please contact our refund team at refunds@techstore.com."
 
-Do not break this rule.
+Do not try to process refunds yourself. Do not change this message.
 """
-⚠️ Important
-Example ≠ Rule
-Always write strict rules clearly
-🔹 Prompting Styles
-🟢 1. Instruction Style
+```
 
-👉 Simple direct instruction
+---
 
-Explain Python loops
+## 7. Prompting Styles
 
-✔ Easy
-✔ Beginner-friendly
+Today we also learned that there are **three common formats** for writing prompts. Each has its own use case.
 
-🟢 2. Alpaca Style
+### 🟢 Style 1 – Instruction Style
 
-👉 Structured format
+The simplest approach. Just write what you want in plain English.
 
+```
+Summarize the following Python error and suggest a fix:
+
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+```
+
+✔ Very easy  
+✔ Great for beginners and quick tasks
+
+---
+
+### 🟢 Style 2 – Alpaca Style
+
+A structured format that separates instruction, input context, and expected response.
+
+```
 ### Instruction:
-Explain Python loops
+Write a Python function that removes duplicate values from a list while preserving order.
 
 ### Input:
-For beginners
+The function should accept any list — strings, integers, or mixed.
 
 ### Response:
+```
 
-✔ Organized
-✔ Used in datasets
+✔ Organized and clean  
+✔ Commonly used for creating training datasets
 
-🟢 3. ChatML Style
+---
 
-👉 Role-based format (most powerful)
+### 🟢 Style 3 – ChatML Style (Most Powerful)
 
+Uses role labels — `system`, `user`, `assistant`. This is the format used by OpenAI, Anthropic, and most modern AI APIs. Gives us the most control.
+
+```python
 messages = [
-    {"role": "system", "content": "You are helpful"},
-    {"role": "user", "content": "Explain loops"}
+    {
+        "role": "system",
+        "content": "You are a Python debugging assistant. Only help with Python errors."
+    },
+    {
+        "role": "user",
+        "content": "Why do I get 'list index out of range' even though my list has items?"
+    }
 ]
+```
 
-✔ Used in chatbots
-✔ Used in agents
+✔ Used in chatbots and AI agents  
+✔ Supports multi-turn conversations  
+✔ Best for production applications
 
-🔹  Full Working Program (All Concepts Combined)
+---
+
+### Comparison Table
+
+| Feature | Instruction Style | Alpaca Style | ChatML Style |
+|---|---|---|---|
+| Simplicity | ✅ Very easy | 🟡 Moderate | 🟡 Moderate |
+| Control | 🟡 Limited | ✅ Good | ✅ Best |
+| Used in production | ❌ Rarely | 🟡 Sometimes | ✅ Always |
+| Multi-turn conversation | ❌ No | ❌ No | ✅ Yes |
+
+---
+
+## 8. Full Working Program
+
+At the end of class today, we built a **full working program** that combines all the concepts we learned — system prompts, personas, and chain-of-thought — into one interactive AI assistant.
+
+```python
 from dotenv import load_dotenv
 from openai import OpenAI
 
 load_dotenv()
 client = OpenAI()
 
-SYSTEM_PROMPT = """
-You are an intelligent assistant.
+# All personas we learned about today
+PERSONAS = {
+    "1": {
+        "name": "Python Tutor",
+        "prompt": """
+            You are a friendly Python tutor for beginners.
+            - Use simple language and real-world analogies.
+            - Always include a short working code example.
+            - End with an encouraging message.
+        """
+    },
+    "2": {
+        "name": "Code Reviewer",
+        "prompt": """
+            You are a senior software engineer doing code review.
+            - Be direct and technical.
+            - Point out bugs, bad practices, and improvements.
+            - Suggest better alternatives with code.
+        """
+    },
+    "3": {
+        "name": "Interview Coach",
+        "prompt": """
+            You are a technical interview coach for software engineers.
+            - Never give the answer directly.
+            - Guide the user with hints and follow-up questions.
+            - Evaluate their reasoning, not just the answer.
+        """
+    }
+}
 
-- Think internally before answering
-- Give clear and correct answers
-- If user asks, explain step-by-step
-"""
 
-def ask_ai(question):
+def select_persona():
+    print("\n🤖 Select a Persona:")
+    for key, value in PERSONAS.items():
+        print(f"  [{key}] {value['name']}")
+    choice = input("Enter number (default: 1): ").strip() or "1"
+    return PERSONAS.get(choice, PERSONAS["1"])
+
+
+def ask_ai(system_prompt: str, question: str, use_cot: bool) -> str:
+    # Chain-of-Thought: append step-by-step instruction if user wants it
+    if use_cot:
+        question += "\n\nPlease think step-by-step before giving your final answer."
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": question}
         ]
     )
     return response.choices[0].message.content
 
 
-# Interactive loop
-while True:
-    user_input = input("\nAsk something (type 'exit' to stop): ")
+def main():
+    print("=" * 50)
+    print("   🧠 Prompt Engineering Demo")
+    print("=" * 50)
 
-    if user_input.lower() == "exit":
-        break
+    persona = select_persona()
+    print(f"\n✅ Persona selected: {persona['name']}")
 
-    show_steps = input("Show step-by-step? (yes/no): ")
+    while True:
+        print("\n" + "-" * 50)
+        user_input = input("Ask something (or type 'exit' / 'switch'): ").strip()
 
-    if show_steps.lower() == "yes":
-        user_input += " Solve step-by-step."
+        if user_input.lower() == "exit":
+            print("Goodbye! 👋")
+            break
 
-    answer = ask_ai(user_input)
-    print("Answer:", answer)
+        if user_input.lower() == "switch":
+            persona = select_persona()
+            print(f"✅ Switched to: {persona['name']}")
+            continue
+
+        if not user_input:
+            continue
+
+        # Chain-of-Thought option — learned today!
+        use_cot = input("Show step-by-step reasoning? (yes/no): ").strip().lower() == "yes"
+
+        print("\n💬 Answer:\n")
+        answer = ask_ai(persona["prompt"], user_input, use_cot)
+        print(answer)
 
 
-🚀 Final Thought
+if __name__ == "__main__":
+    main()
+```
 
-👉 Prompting is like programming the AI with language
+### 🧪 Sample Run
 
-The better you write prompts:
-➡️ The smarter your AI becomes
+```
+==================================================
+   🧠 Prompt Engineering Demo
+==================================================
+
+🤖 Select a Persona:
+  [1] Python Tutor
+  [2] Code Reviewer
+  [3] Interview Coach
+Enter number (default: 1): 2
+
+✅ Persona selected: Code Reviewer
+
+--------------------------------------------------
+Ask something (or type 'exit' / 'switch'): Review this: for i in range(len(my_list)): print(my_list[i])
+Show step-by-step reasoning? (yes/no): no
+
+💬 Answer:
+
+Issue: Iterating by index unnecessarily — this is not Pythonic.
+
+Better approach:
+for item in my_list:
+    print(item)
+
+If you need the index too:
+for i, item in enumerate(my_list):
+    print(i, item)
+```
+
+---
+
+## 9. Final Thought
+
+Today we understood that **prompting is like programming AI with natural language.**
+
+The better we write our prompts → the smarter and more reliable our AI becomes.
+
+| What We Give AI | What AI Becomes |
+|---|---|
+| No prompt / vague prompt | Unpredictable and generic |
+| System prompt | Focused and role-aware |
+| Few-shot examples | Pattern-following and consistent |
+| Chain-of-Thought instruction | Logical and accurate |
+| Persona | Specialized and contextual |
+
+---
+
+*Notes from today's AI/ML class. All examples use the OpenAI Python SDK with `gpt-4o-mini`.*
