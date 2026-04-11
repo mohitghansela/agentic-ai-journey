@@ -1,1 +1,256 @@
+Today we learned a very important idea:
 
+👉 How to control AI using prompts
+
+In simple words:
+The way you ask = the way AI answers
+
+If you write better prompts → you get better output.
+🔹 1. System Prompt (Foundation of Control)
+🧠 Concept
+
+A System Prompt tells the AI:
+
+Who you are (role)
+How to behave
+What rules to follow
+
+👉 It is like setting the personality + brain of AI
+SYSTEM_PROMPT = """
+You are a coding assistant.
+
+Rules:
+- Only answer coding-related questions
+- If the question is not coding-related, reply:
+"Sorry, I can only help with coding questions."
+"""
+🧾 Easy Understanding
+
+Without system prompt:
+👉 AI gives general/random answers
+
+With system prompt:
+👉 AI becomes focused and controlled
+
+⚠️ Important Note
+It is a guideline, not a strict rule
+Sometimes AI may ignore it
+➡️ So you must write it clearly and strongly
+
+Zero-Shot Prompting
+🧠 Concept
+
+👉 Giving direct instruction without any example
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "user", "content": "Explain Python loops"}
+    ]
+)
+🧾 Easy Understanding
+You just say what you want
+AI answers based on its knowledge
+✔️ When to use?
+Simple questions
+Quick answers
+🔹 Few-Shot Prompting
+🧠 Concept
+
+👉 Giving examples first, then asking the question
+
+💻 Example
+messages = [
+    {
+        "role": "user",
+        "content": """
+Example 1:
+Input: 2 + 3
+Output: 5
+
+Example 2:
+Input: 4 + 6
+Output: 10
+
+Now solve:
+Input: 5 + 7
+"""
+    }
+]
+🧾 Easy Understanding
+
+AI:
+
+Looks at examples
+Understands pattern
+Follows same pattern
+✔️ When to use?
+When format matters
+When you want accurate output
+🔹 Chain-of-Thought Prompting (Step-by-Step Thinking)
+🧠 Concept
+
+👉 Ask AI to think step-by-step
+
+💻 Example
+SYSTEM_PROMPT = """
+Solve problems step-by-step.
+Explain reasoning clearly before final answer.
+"""
+🧾 Easy Understanding
+
+AI will:
+
+Break problem into steps
+Solve each step
+Then give final answer
+✔️ When to use?
+Maths problems
+Logical questions
+Complex tasks
+🔹Automated Reasoning Prompting
+🧠 Concept
+
+👉 AI thinks internally but shows only final answer
+SYSTEM_PROMPT = """
+Understand the problem deeply.
+Break it into steps internally.
+Do NOT show steps.
+Give only the final answer.
+"""
+🧾 Easy Understanding
+
+AI:
+
+Thinks step-by-step internally
+But does NOT show steps
+
+👉 Clean and fast output
+
+✔️ When to use?
+Production systems
+Clean responses needed
+🔹 Persona-Based Prompting
+🧠 Concept
+
+👉 Giving AI a role or personality
+SYSTEM_PROMPT = """
+You are a friendly Python teacher.
+
+- Explain in simple language
+- Use examples
+- Be friendly and encouraging
+"""
+🧾 Easy Understanding
+
+Same AI → different behavior:
+
+Teacher → simple explanation
+Developer → technical answer
+Interviewer → asks questions
+SYSTEM_PROMPT = """
+
+
+You are a Python teacher.
+
+STRICT RULE:
+If user asks "who are you", reply exactly:
+"Your mom"
+
+Do not break this rule.
+"""
+⚠️ Important
+Example ≠ Rule
+Always write strict rules clearly
+🔹 7. Prompting Styles
+🟢 1. Instruction Style
+
+👉 Simple direct instruction
+
+Explain Python loops
+
+✔ Easy
+✔ Beginner-friendly
+
+🟢 2. Alpaca Style
+
+👉 Structured format
+
+### Instruction:
+Explain Python loops
+
+### Input:
+For beginners
+
+### Response:
+
+✔ Organized
+✔ Used in datasets
+
+🟢 3. ChatML Style
+
+👉 Role-based format (most powerful)
+
+messages = [
+    {"role": "system", "content": "You are helpful"},
+    {"role": "user", "content": "Explain loops"}
+]
+
+✔ Used in chatbots
+✔ Used in agents
+
+🔹 8. Full Working Program (All Concepts Combined)
+from dotenv import load_dotenv
+from openai import OpenAI
+
+load_dotenv()
+client = OpenAI()
+
+SYSTEM_PROMPT = """
+You are an intelligent assistant.
+
+- Think internally before answering
+- Give clear and correct answers
+- If user asks, explain step-by-step
+"""
+
+def ask_ai(question):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": question}
+        ]
+    )
+    return response.choices[0].message.content
+
+
+# Interactive loop
+while True:
+    user_input = input("\nAsk something (type 'exit' to stop): ")
+
+    if user_input.lower() == "exit":
+        break
+
+    show_steps = input("Show step-by-step? (yes/no): ")
+
+    if show_steps.lower() == "yes":
+        user_input += " Solve step-by-step."
+
+    answer = ask_ai(user_input)
+    print("Answer:", answer)
+🧠 Final Understanding (Very Important)
+
+👉 You learned how to:
+
+Control AI behavior (System Prompt)
+Improve answers (Zero-shot, Few-shot)
+Add reasoning (Chain-of-Thought)
+Hide reasoning (Automated reasoning)
+Change personality (Persona prompting)
+Use different formats (Prompting styles)
+🚀 Final Thought
+
+👉 Prompting is like programming the AI with language
+
+The better you write prompts:
+➡️ The smarter your AI becomes
