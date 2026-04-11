@@ -161,7 +161,7 @@ Do not break this rule.
 ⚠️ Important
 Example ≠ Rule
 Always write strict rules clearly
-🔹 7. Prompting Styles
+🔹 Prompting Styles
 🟢 1. Instruction Style
 
 👉 Simple direct instruction
@@ -198,7 +198,7 @@ messages = [
 ✔ Used in chatbots
 ✔ Used in agents
 
-🔹 8. Full Working Program (All Concepts Combined)
+🔹  Full Working Program (All Concepts Combined)
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -238,16 +238,8 @@ while True:
 
     answer = ask_ai(user_input)
     print("Answer:", answer)
-🧠 Final Understanding (Very Important)
 
-👉 You learned how to:
 
-Control AI behavior (System Prompt)
-Improve answers (Zero-shot, Few-shot)
-Add reasoning (Chain-of-Thought)
-Hide reasoning (Automated reasoning)
-Change personality (Persona prompting)
-Use different formats (Prompting styles)
 🚀 Final Thought
 
 👉 Prompting is like programming the AI with language
