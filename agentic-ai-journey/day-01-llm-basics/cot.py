@@ -8,7 +8,8 @@ client = OpenAI()
 System_prompt = """
 You are a helpful assistant.
 Always solve problems step-by-step.
-Explain your reasoning clearly before giving the final answer.
+
+Make sure to explain your reasoning clearly before giving the final answer.
 """
 
 response = client.chat.completions.create(
