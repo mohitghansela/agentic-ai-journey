@@ -1,0 +1,147 @@
+# 📅 Day 3 – Local LLM + FastAPI Integration (Ollama)
+
+## 🚀 Overview
+
+Aaj maine **local LLM setup + API integration** seekha.
+Goal tha: **local model ko run karke usko FastAPI ke through expose karna**.
+
+---
+
+## 🧠 What I Learned
+
+### 1. Ollama Overview
+
+* Ollama ek **local LLM runtime engine** hai
+* Isse hum models ko apne system pe run kar sakte hain
+* Internet dependency kam ho jati hai
+* Useful for privacy + local development
+
+---
+
+### 2. Docker Setup for Ollama
+
+* Ollama ko Docker container me run kiya
+* Port expose kiya: `11434`
+* Local API endpoint available ho gaya:
+
+```bash
+http://localhost:11434
+```
+
+---
+
+### 3. Model Usage (Gemma2)
+
+* Ollama models list explore ki
+* `gemma2` model use kiya
+* Model ko run/pull karke local inference test kiya
+
+---
+
+### 4. FastAPI Setup
+
+* FastAPI project initialize kiya
+* API endpoint create kiya for chat interaction
+* Request body handle karna seekha
+
+---
+
+## ⚙️ Implementation
+
+### 📄 Code
+
+```python
+from fastapi import FastAPI, Body
+from ollama import Client
+
+app = FastAPI()
+
+client = Client(host="http://localhost:11434")
+
+@app.post("/chat")
+def chat(
+    message: str = Body(..., description="The Message")
+):
+    response = client.chat(
+        model="gemma2",
+        messages=[
+            {"role": "user", "content": message}
+        ]
+    )
+
+    return {"response": response["message"]["content"]}
+```
+
+---
+
+## 🔁 Flow Explanation
+
+```text
+User → FastAPI → Ollama (LLM) → Response → User
+```
+
+1. User message send karta hai `/chat` endpoint pe
+2. FastAPI request receive karta hai
+3. Ollama client ko message forward hota hai
+4. Model (`gemma2`) response generate karta hai
+5. Response user ko return hota hai
+
+---
+
+## 🧪 Testing
+
+* API test via Swagger:
+
+```bash
+http://127.0.0.1:8000/docs
+```
+
+* Sample request:
+
+```json
+{
+  "message": "Hello"
+}
+```
+
+---
+
+## ⚠️ Issues Faced
+
+* ❌ `localhost:11434` format error → fixed by using `http://`
+* ❌ Ollama not installed → installed via Docker
+* ❌ Model not found → pulled model (`gemma2`)
+* ❌ Wrong request body format → fixed using proper JSON
+
+---
+
+## 🧠 Key Learnings
+
+* Local LLMs can be easily integrated with backend APIs
+* FastAPI is powerful for AI-based services
+* Proper API structure is important for stability
+* Ollama simplifies local model execution
+
+---
+
+## 🎯 Outcome
+
+✅ Successfully built a **local AI chat API**
+✅ Understood **LLM → API → response pipeline**
+✅ Ready to move towards:
+
+* RAG systems
+* Agentic AI
+* Multi-step workflows
+
+---
+
+## 🚀 Next Steps
+
+* Add chat history (memory)
+* Build UI (React / simple frontend)
+* Integrate RAG (PDF / docs)
+* Add async handling for scalability
+
+
+
