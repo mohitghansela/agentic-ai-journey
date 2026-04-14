@@ -41,7 +41,7 @@ Each day, I try to:
 
 ## 📈 Progress Log
 
-### Day 1: LLM Basics
+### Start with LLM Basics
 
 * Understanding what LLMs are
 * How tokenization works
